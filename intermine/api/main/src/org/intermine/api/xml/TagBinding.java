@@ -41,6 +41,8 @@ public class TagBinding
             writer.writeAttribute("name", tag.getTagName());
             writer.writeAttribute("objectIdentifier", tag.getObjectIdentifier());
             writer.writeAttribute("type", "" + tag.getType());
+            writer.writeAttribute("id", tag.getId().toString());
+            writer.writeAttribute("userProfileId", tag.getUserProfile().getId().toString());
             writer.writeEndElement();
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
