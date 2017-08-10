@@ -20,9 +20,11 @@ import org.directwebremoting.util.Logger;
 import org.intermine.api.InterMineAPI;
 import org.intermine.api.profile.Profile;
 import org.intermine.api.profile.ProfileManager;
+import org.intermine.api.profile.ProfileManager.ApiPermission;
 import org.intermine.util.Emailer;
 import org.intermine.web.context.InterMineContext;
 import org.intermine.web.context.MailAction;
+import org.intermine.web.logic.profile.LoginHandler;
 import org.intermine.webservice.server.core.JSONService;
 import org.intermine.webservice.server.core.RateLimitHistory;
 import org.intermine.webservice.server.exceptions.BadRequestException;
@@ -39,7 +41,6 @@ import org.json.JSONObject;
  */
 public class NewUserService extends JSONService
 {
-
     private static final String DEFAULTING_TO_1000PH
         = "Configured new user rate limit is not a valid integer. Defaulting to 1000 per hour";
     private static final Logger LOG = Logger.getLogger(NewUserService.class);
@@ -108,6 +109,16 @@ public class NewUserService extends JSONService
         if (p == null) {
             throw new ServiceException("Creating profile failed");
         }
+
+        String rawSessionToken = input.getRawSessionToken();
+        if (rawSessionToken != null) {
+            ApiPermission permission = pm.getPermission(rawSessionToken, im.getClassKeys());
+            Profile tokenProfile = permission.getProfile();
+            if (!tokenProfile.isLoggedIn()) {
+                LoginHandler.mergeProfiles(tokenProfile, p);
+            }
+        }
+
         user.put("temporaryToken", pm.generate24hrKey(p));
 
         output.addResultItem(Arrays.asList(user.toString()));
@@ -154,13 +165,16 @@ public class NewUserService extends JSONService
     {
         private static final String BAD_REQ_MSG = "missing parameters. name and password required";
         private static final String USER_EXISTS_MSG = "There is already a user with that name";
+
         private final String username;
         private final String password;
+        private final String rawSessionToken;
         private final boolean wantsSpam;
 
         NewUserInput() {
             username = request.getParameter("name").toLowerCase();
             password = request.getParameter("password");
+            rawSessionToken = request.getParameter("existing-anon-session-token");
             wantsSpam = Boolean.parseBoolean(request.getParameter("subscribe-to-list"));
             validate();
         }
@@ -177,6 +191,10 @@ public class NewUserService extends JSONService
             return password;
         }
 
+        String getRawSessionToken() {
+            return rawSessionToken;
+        }
+
         private void validate() {
             if (isBlank(username) || isBlank(password)) {
                 throw new BadRequestException(BAD_REQ_MSG);
@@ -187,5 +205,4 @@ public class NewUserService extends JSONService
             }
         }
     }
-
 }

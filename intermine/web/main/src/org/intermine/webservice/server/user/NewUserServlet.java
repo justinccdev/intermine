@@ -32,5 +32,4 @@ public class NewUserServlet extends WebServiceServlet
                 throw new NoServiceException();
         }
     }
-
 }

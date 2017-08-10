@@ -63,16 +63,17 @@ public class Profile
     public static final Map<String, InterMineBag> NO_BAGS = Collections.emptyMap();
     /** Empty typed map holding no templates - useful when creating profiles. **/
     public static final Map<String, ApiTemplate> NO_TEMPLATES = Collections.emptyMap();
+
     protected ProfileManager manager;
     protected String username;
     protected Integer userId;
     protected String password;
     protected boolean isSuperUser;
+
     protected Map<String, SavedQuery> savedQueries = new TreeMap<String, SavedQuery>();
     protected Map<String, InterMineBag> savedBags
         = Collections.synchronizedMap(new TreeMap<String, InterMineBag>());
     protected Map<String, ApiTemplate> savedTemplates = new TreeMap<String, ApiTemplate>();
-
     protected Map<String, InvalidBag> savedInvalidBags = new TreeMap<String, InvalidBag>();
     // was ListOrderedMap() - but that is the same as a LinkedHashMap.
 
@@ -113,17 +114,22 @@ public class Profile
         this.password = password;
         this.isLocal = isLocal;
         this.isSuperUser = isSuperUser;
+
         if (savedQueries != null) {
             this.savedQueries.putAll(savedQueries);
         }
+
         if (savedBags != null) {
             this.savedBags.putAll(savedBags);
         }
+
         if (savedTemplates != null) {
             this.savedTemplates.putAll(savedTemplates);
         }
+
         searchRepository = new UserRepository(this);
         this.token = token;
+
         if (this.userId != null) {
             // preferences backed by DB.
             this.preferences = manager.getPreferences(this);
@@ -154,6 +160,7 @@ public class Profile
                    boolean isSuperUser) {
         this(manager, username, userId, password, savedQueries, savedBags, savedTemplates, token,
             isLocal, isSuperUser);
+
         for (Entry<String, InterMineBag> pair: savedInvalidBags.entrySet()) {
             this.savedInvalidBags.put(pair.getKey(), pair.getValue().invalidate());
         }
@@ -946,5 +953,4 @@ public class Profile
     public boolean prefers(String preference) {
         return preferences.containsKey(preference);
     }
-
 }
