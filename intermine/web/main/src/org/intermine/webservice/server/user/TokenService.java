@@ -13,7 +13,9 @@ package org.intermine.webservice.server.user;
 import org.intermine.api.InterMineAPI;
 import org.intermine.api.profile.Profile;
 import org.intermine.api.profile.ProfileManager;
+import org.intermine.api.profile.ProfileManager.ApiPermission;
 import org.intermine.objectstore.ObjectStoreException;
+import org.intermine.web.logic.profile.LoginHandler;
 import org.intermine.webservice.server.core.ReadWriteJSONService;
 import org.intermine.webservice.server.exceptions.BadRequestException;
 
@@ -36,21 +38,33 @@ public class TokenService extends ReadWriteJSONService
         Profile profile = getPermission().getProfile();
         String tokenType = getOptionalParameter("type", "day").toLowerCase();
         String message = getOptionalParameter("message");
-        String token = getToken(pm, profile, tokenType, message);
+        String existingRawSessionToken = getOptionalParameter("existing-anon-session-token");
+        String token = generateToken(pm, profile, tokenType, message, existingRawSessionToken);
         addResultValue(token, false);
     }
 
-    private String getToken(
+    private String generateToken(
             final ProfileManager pm,
             final Profile profile,
             final String tokenType,
-            final String message)
+            final String message,
+            final String existingRawSessionToken)
         throws ObjectStoreException {
+
         if ("day".equals(tokenType)) {
             return pm.generate24hrKey(profile);
         } else if ("once".equals(tokenType)) {
             return pm.generateSingleUseKey(profile);
         } else if ("api".equals(tokenType)) {
+
+            if (existingRawSessionToken != null) {
+                ApiPermission permission = pm.getPermission(existingRawSessionToken, im.getClassKeys());
+                Profile tokenProfile = permission.getProfile();
+                if (!tokenProfile.isLoggedIn()) {
+                    LoginHandler.mergeProfiles(tokenProfile, profile);
+                }
+            }
+
             return pm.generateApiKey(profile);
         } else if ("perm".equals(tokenType)) {
             if (profile.getUserId() == null) {
