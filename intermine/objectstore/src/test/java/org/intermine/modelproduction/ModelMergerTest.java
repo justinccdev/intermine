@@ -10,16 +10,17 @@ package org.intermine.modelproduction;
  *
  */
 
+import java.io.FileReader;
 import java.io.StringReader;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.intermine.metadata.ClassDescriptor;
-import org.intermine.metadata.InterMineModelParser;
-import org.intermine.metadata.Model;
+import org.intermine.metadata.*;
+import org.junit.Assert;
 
 public class ModelMergerTest extends TestCase
 {
@@ -138,6 +139,27 @@ public class ModelMergerTest extends TestCase
         assertEquals(expected.getReferenceDescriptors(), result);
     }
 
+    public void testMergeClassesWithTerms() throws Exception {
+        String origModelStr =
+              "<model name=\"testmodel\" package=\"package.name\">"
+            + "  <class name=\"A\" term=\"term1\" is-interface=\"false\"></class>"
+            + "</model>";
+        Model origModel = parser.process(new StringReader(origModelStr));
+
+        String mergeModelStr =
+              "<model name=\"testmodel\" package=\"package.name\">"
+            + "  <class name=\"A\" term=\"term1\" is-interface=\"false\"></class>"
+            + "</model>";
+        //Model mergeModel = parser.process(new StringReader(mergeModelStr));
+
+        Set<ClassDescriptor> mergeModelClds
+            = parser.generateClassDescriptors(new StringReader(mergeModelStr), "package.name");
+
+        Model mergedModel = ModelMerger.mergeModel(origModel, mergeModelClds);
+        Assert.assertEquals("term1", mergedModel.getClassDescriptorByName("A").getTerm());
+
+        // TODO: test expected merge failures
+    }
 
     private ClassDescriptor parseClass(String xml, String packageName) throws Exception {
         return (ClassDescriptor) parser

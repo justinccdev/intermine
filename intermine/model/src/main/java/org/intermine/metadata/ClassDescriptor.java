@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.intermine.model.FastPathObject;
 
-
 /**
  * Describe a business model class.  Gives access to attribute, reference and collection
  * descriptors.  Includes primary key information.
@@ -35,6 +34,7 @@ public class ClassDescriptor implements Comparable<ClassDescriptor>
     protected static final String ENDL = System.getProperty("line.separator");
     private final String className;        // name of this class
     private Class<FastPathObject> type;
+    private String term;
 
     // the supers string passed to the constructor
     private String origSuperNames;
@@ -62,26 +62,30 @@ public class ClassDescriptor implements Comparable<ClassDescriptor>
      *
      * @param name the fully qualified name of the described class
      * @param supers a space string of fully qualified interface and superclass names
+     * @param term ontology term that describes this class
      * @param isInterface true if describing an interface
      * @param atts a Collection of AttributeDescriptors
      * @param refs a Collection of ReferenceDescriptors
      * @param cols a Collection of CollectionDescriptors
      * @throws IllegalArgumentException if fields are null
      */
-    public ClassDescriptor(String name, String supers,
+    public ClassDescriptor(String name, String supers, String term,
             boolean isInterface,
             Collection<AttributeDescriptor> atts,
             Collection<ReferenceDescriptor> refs,
             Collection<CollectionDescriptor> cols) {
+
         if (name == null || "".equals(name) || (!name.equals(name.trim()))) {
             throw new IllegalArgumentException("'name' parameter must be a valid String");
         }
+
         // Java only accepts names that start with a character, $ or _, some characters
         // not allowed anywhere in name.
         if (!Character.isJavaIdentifierStart(name.charAt(0))) {
             throw new IllegalArgumentException("Java field names must start with a character, "
                                                + "'$' or '_' but class name was: " + name);
         }
+
         String unqualified = name.substring(name.lastIndexOf('.') + 1);
         for (int i = 0; i < unqualified.length(); i++) {
             if (!Character.isJavaIdentifierPart(unqualified.charAt(i))) {
@@ -110,6 +114,7 @@ public class ClassDescriptor implements Comparable<ClassDescriptor>
         }
 
         this.isInterface = isInterface;
+        this.term = term;
 
         // build maps of names to FieldDescriptors
 
@@ -530,6 +535,10 @@ public class ClassDescriptor implements Comparable<ClassDescriptor>
         return superDescriptors;
     }
 
+    public String getTerm() {
+        return term;
+    }
+
     /**
      * True if this class is an interface.
      *
@@ -792,6 +801,11 @@ public class ClassDescriptor implements Comparable<ClassDescriptor>
             }
             sb.append("\"");
         }
+
+        if (term != null) {
+            sb.append(" term=\"" + term + "\"");
+        }
+
         sb.append(" is-interface=\"" + isInterface + "\">");
         Set<FieldDescriptor> l = new LinkedHashSet<FieldDescriptor>();
         l.addAll(getAttributeDescriptors());

@@ -189,7 +189,7 @@ public final class ModelMerger
 
             String supersStr = toSupersString(cd.getSuperclassNames());
 
-            newSet.put(cd.getName(), new ClassDescriptor(cd.getName(), supersStr, cd.isInterface(),
+            newSet.put(cd.getName(), new ClassDescriptor(cd.getName(), supersStr, cd.getTerm(), cd.isInterface(),
                                                 cloneAttributeDescriptors(adescs),
                                                 cloneReferenceDescriptors(rdescs),
                                                 cloneCollectionDescriptors(cdescs)));
@@ -253,6 +253,20 @@ public final class ModelMerger
                     + original.isInterface() + " != " + merge.getName() + ".isInterface/"
                     + merge.isInterface());
         }
+
+        String term = original.getTerm();
+        String mergeTerm = merge.getTerm();
+
+        if (mergeTerm != null) {
+            if (term == null) {
+                term = mergeTerm;
+            } else if (!mergeTerm.equals(term)) {
+                throw new ModelMergerException(
+                        "Class " + original.getName() + " merge term " + merge.getTerm()
+                                + " is not the same as the original " + original.getTerm());
+            }
+        }
+
         Set<AttributeDescriptor> attrs = mergeAttributes(original, merge);
         Set<CollectionDescriptor> cols = mergeCollections(original, merge);
         Set<ReferenceDescriptor> refs = mergeReferences(original, merge);
@@ -275,17 +289,21 @@ public final class ModelMerger
                 }
             }
         }
+
         supers.addAll(original.getSuperclassNames());
         supers.addAll(merge.getSuperclassNames());
+
         if (replacingSuperclass) {
             supers.remove(original.getSuperclassDescriptor().getName());
         }
+
         // supers can't be an empty string
         String supersStr = StringUtil.join(supers, " ");
         if (supersStr != null && "".equals(supersStr)) {
             supersStr = null;
         }
-        return new ClassDescriptor(original.getName(), supersStr,
+
+        return new ClassDescriptor(original.getName(), supersStr, term,
                 merge.isInterface(), attrs, refs, cols);
     }
 
@@ -507,7 +525,7 @@ public final class ModelMerger
         if (supers != null && "".equals(supers)) {
             supers = null;
         }
-        return new ClassDescriptor(cld.getName(), supers, cld.isInterface(),
+        return new ClassDescriptor(cld.getName(), supers, cld.getTerm(), cld.isInterface(),
                 cloneAttributeDescriptors(cld.getAttributeDescriptors()),
                 cloneReferenceDescriptors(cld.getReferenceDescriptors()),
                 cloneCollectionDescriptors(cld.getCollectionDescriptors()));

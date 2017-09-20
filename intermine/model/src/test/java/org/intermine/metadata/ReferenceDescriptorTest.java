@@ -70,9 +70,9 @@ public class ReferenceDescriptorTest extends TestCase
         ReferenceDescriptor rfd1 = new ReferenceDescriptor("rfd1", "Class2", null);
         Set<ReferenceDescriptor> references = Collections.singleton(rfd1);
         // cld1 has a ReferenceDescriptor that points to Class2
-        new ClassDescriptor("Class1", null, false,
+        new ClassDescriptor("Class1", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, references, ClassDescriptorFactory.NO_COLLS);
-        new ClassDescriptor("Class2", null, false,
+        new ClassDescriptor("Class2", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, ClassDescriptorFactory.NO_REFS, ClassDescriptorFactory.NO_COLLS);
         try {
             rfd1.getReferencedClassDescriptor();
@@ -85,7 +85,7 @@ public class ReferenceDescriptorTest extends TestCase
         ReferenceDescriptor rfd1 = new ReferenceDescriptor("rfd1", "package.name.Class2", null);
         Set<ReferenceDescriptor> references = Collections.singleton(rfd1);        
         // cld1 has a ReferenceDescriptor that points to Class2
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, false,
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, references, ClassDescriptorFactory.NO_COLLS);
         ClassDescriptor cld2 = cldFac.makeClass("Class2");
         new Model("model", "package.name", Arrays.asList(cld1, cld2));
@@ -104,9 +104,9 @@ public class ReferenceDescriptorTest extends TestCase
         ReferenceDescriptor rfd2 = new ReferenceDescriptor("rfd2", "package.name.Class1", "rfd1");
         Set<ReferenceDescriptor> refs1 = Collections.singleton(rfd1);
         Set<ReferenceDescriptor> refs2 = Collections.singleton(rfd2);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, false,
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, refs1, ClassDescriptorFactory.NO_COLLS);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, false,
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, refs2, ClassDescriptorFactory.NO_COLLS);
         new Model("model", "package.name", Arrays.asList(cld1, cld2));
         try {
@@ -125,9 +125,9 @@ public class ReferenceDescriptorTest extends TestCase
         ReferenceDescriptor rfd2 = new ReferenceDescriptor("rfd2", "package.name.Class1", "rfd1");
         Set<ReferenceDescriptor> refs1 = Collections.singleton(rfd1);
         Set<ReferenceDescriptor> refs2 = Collections.singleton(rfd2);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, false,
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, refs1, ClassDescriptorFactory.NO_COLLS);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, false,
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, refs2, ClassDescriptorFactory.NO_COLLS);
         try {
             new Model("model", "package.name", Arrays.asList(cld1, cld2));
@@ -144,9 +144,9 @@ public class ReferenceDescriptorTest extends TestCase
         ReferenceDescriptor rfd2 = new ReferenceDescriptor("rfd2", "package.name.Class1", "rfdOther1");
         Set<ReferenceDescriptor> refs1 = new HashSet<ReferenceDescriptor>(Arrays.asList(rfd1, rfdOther1));
         Set<ReferenceDescriptor> refs2 = Collections.singleton(rfd2);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, false,
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, refs1, ClassDescriptorFactory.NO_COLLS);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, false,
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, refs2, ClassDescriptorFactory.NO_COLLS);
         Model model = new Model("model", "package.name", Arrays.asList(cld1, cld2));
         // this no longer throws an exception , instead creates the model but adds a problem
@@ -160,9 +160,9 @@ public class ReferenceDescriptorTest extends TestCase
         AttributeDescriptor atd2 = new AttributeDescriptor("atd2", "java.lang.String");
         Set<ReferenceDescriptor> refs1 = Collections.singleton(rfd1);
         Set<AttributeDescriptor> atts = Collections.singleton(atd2);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, false,
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, refs1, ClassDescriptorFactory.NO_COLLS);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, false, atts,
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, false, atts,
                 ClassDescriptorFactory.NO_REFS, ClassDescriptorFactory.NO_COLLS);
         try {
             new Model("model", "package.name", Arrays.asList(cld1, cld2));
@@ -182,11 +182,11 @@ public class ReferenceDescriptorTest extends TestCase
         Set<ReferenceDescriptor> refs1 = Collections.singleton(rfd1);
         Set<ReferenceDescriptor> refs2 = Collections.singleton(rfd2);
         Set<ReferenceDescriptor> refs3 = Collections.singleton(rfd3);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, false,
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, refs1, ClassDescriptorFactory.NO_COLLS);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, false,
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, refs2, ClassDescriptorFactory.NO_COLLS);
-        ClassDescriptor cld3 = new ClassDescriptor("package.name.Class3", null, false,
+        ClassDescriptor cld3 = new ClassDescriptor("package.name.Class3", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, refs3, ClassDescriptorFactory.NO_COLLS);
 
         Model model = new Model("model", "package.name", Arrays.asList(cld1, cld2, cld3));
@@ -196,7 +196,7 @@ public class ReferenceDescriptorTest extends TestCase
     public void testRelationTypeOneToOne() throws Exception {
         ReferenceDescriptor ref1  = new ReferenceDescriptor("ref1", "package.name.Class1", "ref2");
         ReferenceDescriptor ref2  = new ReferenceDescriptor("ref2", "package.name.Class1", null);
-        ClassDescriptor cld = new ClassDescriptor("package.name.Class1", null, false,
+        ClassDescriptor cld = new ClassDescriptor("package.name.Class1", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, Arrays.asList(ref1, ref2), ClassDescriptorFactory.NO_COLLS);
         new Model("model1", "package.name", Collections.singleton(cld));
         assertEquals(FieldDescriptor.ONE_ONE_RELATION, ref1.relationType());
@@ -207,7 +207,7 @@ public class ReferenceDescriptorTest extends TestCase
         ReferenceDescriptor ref  = new ReferenceDescriptor("ref1", "package.name.Class1", "col1");
         Set<CollectionDescriptor> cols = Collections.singleton(col);
         Set<ReferenceDescriptor> refs = Collections.singleton(ref);
-        ClassDescriptor cld = new ClassDescriptor("package.name.Class1", null, false,
+        ClassDescriptor cld = new ClassDescriptor("package.name.Class1", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, refs, cols);
         new Model("model1", "package.name", Collections.singleton(cld));
         assertEquals(FieldDescriptor.N_ONE_RELATION, ref.relationType());
@@ -215,7 +215,7 @@ public class ReferenceDescriptorTest extends TestCase
 
     public void testRelationTypeUnidirectional() throws Exception {
         ReferenceDescriptor ref = new ReferenceDescriptor("ref1", "package.name.Class1", null);
-        ClassDescriptor cld = new ClassDescriptor("package.name.Class1", null, false,
+        ClassDescriptor cld = new ClassDescriptor("package.name.Class1", null, null, false,
                 ClassDescriptorFactory.NO_ATTRS, Collections.singleton(ref), ClassDescriptorFactory.NO_COLLS);
         new Model("model1", "package.name", Collections.singleton(cld));
         assertEquals(FieldDescriptor.N_ONE_RELATION, ref.relationType());

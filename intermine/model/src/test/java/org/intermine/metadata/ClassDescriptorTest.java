@@ -34,7 +34,7 @@ public class ClassDescriptorTest extends TestCase
 
     public void testConstructNameNull() {
         try {
-            new ClassDescriptor("", null, false, noAttrs, noRefs, noColls);
+            new ClassDescriptor("", null, null, false, noAttrs, noRefs, noColls);
             fail("Expected: IllegalArgumentException");
         } catch (IllegalArgumentException e) {
         }
@@ -51,11 +51,13 @@ public class ClassDescriptorTest extends TestCase
     private ClassDescriptor makeInterface(String name) {
         return makeClassDescriptor(name, null, true);
     }
+
     private ClassDescriptor makeInterface(String name, String supers) {
         return makeClassDescriptor(name, supers, true);
     }
+
     private ClassDescriptor makeClassDescriptor(String name, String supers, boolean isInterface) {
-        return new ClassDescriptor(name, supers, isInterface, noAttrs, noRefs, noColls);
+        return new ClassDescriptor(name, supers, null, isInterface, noAttrs, noRefs, noColls);
     }
 
     public void testSetModel() throws Exception {
@@ -149,7 +151,7 @@ public class ClassDescriptorTest extends TestCase
 
     public void testFieldDescriptorByName() throws Exception {
         ClassDescriptor cld = new ClassDescriptor(
-                "package.name.Class1", null, false,
+                "package.name.Class1", null, null, false,
                 getAttributes(), getReferences(), getCollections());
         cld.setAllFieldDescriptors();
         assertNotNull(cld.getFieldDescriptorByName("atd1"));
@@ -163,11 +165,11 @@ public class ClassDescriptorTest extends TestCase
     public void testGetAllAttributeDescriptors() throws Exception {
         // three superclass levels with one attribute each, getAllAttributeDescriptors on cld3 should return all 3
         AttributeDescriptor atb1 = new AttributeDescriptor("att1", "java.lang.String");
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, false, Collections.singleton(atb1), noRefs, noColls);
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, false, Collections.singleton(atb1), noRefs, noColls);
         AttributeDescriptor atb2 = new AttributeDescriptor("att2", "java.lang.String");
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", "package.name.Class1", false, Collections.singleton(atb2), noRefs, noColls);
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", "package.name.Class1", null, false, Collections.singleton(atb2), noRefs, noColls);
         AttributeDescriptor atb3 = new AttributeDescriptor("att3", "java.lang.String");
-        ClassDescriptor cld3 = new ClassDescriptor("package.name.Class3", "package.name.Class2", false, Collections.singleton(atb3), noRefs, noColls);
+        ClassDescriptor cld3 = new ClassDescriptor("package.name.Class3", "package.name.Class2", null, false, Collections.singleton(atb3), noRefs, noColls);
 
         new Model("test", "package.name", Arrays.asList(cld1, cld2, cld3));
 
@@ -231,7 +233,7 @@ public class ClassDescriptorTest extends TestCase
         ClassDescriptor col4 = makeClass("class1", "Super");
         ClassDescriptor col5 = makeClass("class1", "Interface");
         ClassDescriptor col6 = makeClass("class1");
-        ClassDescriptor col7 = new ClassDescriptor("class1", null, true,
+        ClassDescriptor col7 = new ClassDescriptor("class1", null, null, true,
                 Collections.singleton(new AttributeDescriptor("field", "int")), noRefs, noColls);
 
         assertEquals(col1, col2);
@@ -296,8 +298,8 @@ public class ClassDescriptorTest extends TestCase
         AttributeDescriptor atd2 = new AttributeDescriptor("atd1", "int");
         Set<AttributeDescriptor> atds1 = Collections.singleton(atd1);
         Set<AttributeDescriptor> atds2 = Collections.singleton(atd2);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, true, atds1, noRefs, noColls);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, true, atds2, noRefs, noColls);
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, true, atds1, noRefs, noColls);
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, true, atds2, noRefs, noColls);
         ClassDescriptor cld3 = makeClass("package.name.Class3", "package.name.Class1 package.name.Class2");
         new Model("model", "package.name", Arrays.asList(cld1, cld2, cld3));
     }
@@ -307,8 +309,8 @@ public class ClassDescriptorTest extends TestCase
         ReferenceDescriptor ref2 = new ReferenceDescriptor("atd1", "package.name.Class2", null);
         Set<ReferenceDescriptor> refs1 = Collections.singleton(ref1);
         Set<ReferenceDescriptor> refs2 = Collections.singleton(ref2);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, true, noAttrs, refs1, noColls);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, true, noAttrs, refs2, noColls);
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, true, noAttrs, refs1, noColls);
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, true, noAttrs, refs2, noColls);
         ClassDescriptor cld3 = makeClass("package.name.Class3", "package.name.Class1 package.name.Class2");
         new Model("model", "package.name", Arrays.asList(cld1, cld2, cld3));
         ReferenceDescriptor rd = cld3.getReferenceDescriptorByName("atd1", true);
@@ -320,8 +322,8 @@ public class ClassDescriptorTest extends TestCase
         CollectionDescriptor coll2 = new CollectionDescriptor("atd1", "package.name.Class2", null);
         Set<CollectionDescriptor> colls1 = Collections.singleton(coll1);
         Set<CollectionDescriptor> colls2 = Collections.singleton(coll2);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, true, noAttrs, noRefs, colls1);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, true, noAttrs, noRefs, colls2);
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, true, noAttrs, noRefs, colls1);
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, true, noAttrs, noRefs, colls2);
         ClassDescriptor cld3 = makeClass("package.name.Class3", "package.name.Class1 package.name.Class2");
         new Model("model", "package.name", Arrays.asList(cld1, cld2, cld3));
         ReferenceDescriptor rd = cld3.getCollectionDescriptorByName("atd1", true);
@@ -333,8 +335,8 @@ public class ClassDescriptorTest extends TestCase
         AttributeDescriptor atd2 = new AttributeDescriptor("collision", "float");
         Set<AttributeDescriptor> atds1 = Collections.singleton(atd1);
         Set<AttributeDescriptor> atds2 = Collections.singleton(atd2);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, true, atds1, noRefs, noColls);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, true, atds2, noRefs, noColls);
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, true, atds1, noRefs, noColls);
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, true, atds2, noRefs, noColls);
         ClassDescriptor cld3 = makeClass("package.name.Class3", "package.name.Class1 package.name.Class2");
         try {
             new Model("model", "package.name", Arrays.asList(cld1, cld2, cld3));
@@ -348,8 +350,8 @@ public class ClassDescriptorTest extends TestCase
         ReferenceDescriptor ref = new ReferenceDescriptor("collision", "package.name.Class2", null);
         Set<AttributeDescriptor> attrs = Collections.singleton(attr);
         Set<ReferenceDescriptor> refs = Collections.singleton(ref);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, true, noAttrs, refs, noColls);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, true, attrs, noRefs, noColls);
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, true, noAttrs, refs, noColls);
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, true, attrs, noRefs, noColls);
         ClassDescriptor cld3 = makeClass("package.name.Class3", "package.name.Class1 package.name.Class2");
         try {
             new Model("model", "package.name", Arrays.asList(cld1, cld2, cld3));
@@ -363,8 +365,8 @@ public class ClassDescriptorTest extends TestCase
         AttributeDescriptor attr = new AttributeDescriptor("collision", "float");
         Set<CollectionDescriptor> colls = Collections.singleton(coll);
         Set<AttributeDescriptor> attrs = Collections.singleton(attr);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, true, noAttrs, noRefs, colls);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, true, attrs, noRefs, noColls);
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, true, noAttrs, noRefs, colls);
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, true, attrs, noRefs, noColls);
         ClassDescriptor cld3 = makeClass("package.name.Class3", "package.name.Class1 package.name.Class2");
         try {
             new Model("model", "package.name", Arrays.asList(cld1, cld2, cld3));
@@ -378,8 +380,8 @@ public class ClassDescriptorTest extends TestCase
         ReferenceDescriptor ref = new ReferenceDescriptor("atd1", "package.name.Class2", null);
         Set<CollectionDescriptor> colls = Collections.singleton(coll);
         Set<ReferenceDescriptor> refs = Collections.singleton(ref);
-        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, true, noAttrs, noRefs, colls);
-        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, true, noAttrs, refs, noColls);
+        ClassDescriptor cld1 = new ClassDescriptor("package.name.Class1", null, null, true, noAttrs, noRefs, colls);
+        ClassDescriptor cld2 = new ClassDescriptor("package.name.Class2", null, null, true, noAttrs, refs, noColls);
         ClassDescriptor cld3 = makeClass("package.name.Class3", "package.name.Class1 package.name.Class2");
         try {
             new Model("model", "package.name", Arrays.asList(cld1, cld2, cld3));

@@ -50,11 +50,11 @@ public class ModelTest extends TestCase
     }
 
     public void testContructNullArguments() throws Exception {
-        ClassDescriptor cld1 = new ClassDescriptor("Class1", null, false,
+        ClassDescriptor cld1 = new ClassDescriptor("Class1", null, null, false,
                 new HashSet<AttributeDescriptor>(),
                 new HashSet<ReferenceDescriptor>(),
                 new HashSet<CollectionDescriptor>());
-        ClassDescriptor cld2 = new ClassDescriptor("Class2", null, false,
+        ClassDescriptor cld2 = new ClassDescriptor("Class2", null, null, false,
                 new HashSet<AttributeDescriptor>(),
                 new HashSet<ReferenceDescriptor>(),
                 new HashSet<CollectionDescriptor>());

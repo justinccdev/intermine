@@ -50,19 +50,19 @@ public class InterMineModelParserTest extends TestCase
     }
 
     private Set getExpectedClds() {
-        ClassDescriptor hasAddress = new ClassDescriptor(PKG + "HasAddress", null, true, new HashSet(), new HashSet(), new HashSet());
+        ClassDescriptor hasAddress = new ClassDescriptor(PKG + "HasAddress", null, null, true, new HashSet(), new HashSet(), new HashSet());
         AttributeDescriptor id = new AttributeDescriptor("id", "java.lang.Integer");
-        ClassDescriptor intermineObject = new ClassDescriptor("org.intermine.model.InterMineObject", null, true,
+        ClassDescriptor intermineObject = new ClassDescriptor("org.intermine.model.InterMineObject", null, null, true,
                                                               new HashSet(Collections.singleton(id)), new HashSet(), new HashSet());
         AttributeDescriptor companyName = new AttributeDescriptor("name", "java.lang.String");
         CollectionDescriptor companyDepartments = new CollectionDescriptor("departments", PKG + "Department", "company");
-        ClassDescriptor company = new ClassDescriptor(PKG + "Company", PKG + "HasAddress", true,
+        ClassDescriptor company = new ClassDescriptor(PKG + "Company", PKG + "HasAddress", null, true,
                                                       new HashSet(Collections.singleton(companyName)),
                                                       new HashSet(),
                                                       new HashSet(Collections.singleton(companyDepartments)));
 
         ReferenceDescriptor departmentCompany = new ReferenceDescriptor("company", PKG + "Company", "departments");
-        ClassDescriptor department = new ClassDescriptor(PKG + "Department", null, false,
+        ClassDescriptor department = new ClassDescriptor(PKG + "Department", null, null, false,
                                                          new HashSet(),
                                                          new HashSet(Collections.singleton(departmentCompany)),
                                                          new HashSet());;
