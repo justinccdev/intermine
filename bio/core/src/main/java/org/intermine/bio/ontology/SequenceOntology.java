@@ -865,7 +865,7 @@ public class SequenceOntology
         }
 
         String childName = TypeUtil.generateClassName(NAMESPACE, getName(childIdentifier));
-        return new ClassDescriptor(childName, parents, true, fakeAttributes, references,
+        return new ClassDescriptor(childName, parents, childIdentifier, true, fakeAttributes, references,
                 collections);
     }
 
