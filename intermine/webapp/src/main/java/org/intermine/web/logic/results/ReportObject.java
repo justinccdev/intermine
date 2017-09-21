@@ -353,66 +353,18 @@ public class ReportObject
 
         Map bioschemasMap = new HashMap();
         bioschemasMap.put("@context", "http://bioschemas.org");
-        bioschemasMap.put("@type", "DataSet");
-        bioschemasMap.put("name", getHtmlHeadTitle());
-        bioschemasMap.put("description", getHtmlHeadTitle());
+        bioschemasMap.put("@type", "PhysicalEntity");
+        bioschemasMap.put("name", getHtmlHeadTitle() + " " + attributes.get("primaryIdentifier"));
+        //bioschemasMap.put("description", getHtmlHeadTitle());
         bioschemasMap.put("url", "http://beta.synbiomine.org/synbiomine/report.do?id=" + getId());
-        bioschemasMap.put("about", "Integrated dataset for " + getHtmlHeadTitle());
-        Map dataCatalogMap = new HashMap();
-        dataCatalogMap.put("@type", "DataCatalog");
-        dataCatalogMap.put("url", "http://beta.synbiomine.org/synbiomine");
-        bioschemasMap.put("includedInDataCatalog", dataCatalogMap);
-        List citations = new ArrayList();
 
-        String sql = "select name, url from datasource;";
-        Connection c = null;
-        Statement s = null;
-        ResultSet rs = null;
-
-        try {
-            try {
-                c = ((ObjectStoreInterMineImpl)im.getObjectStore()).getConnection();
-                s = c.createStatement();
-                rs = s.executeQuery(sql);
-                while (rs.next()) {
-                    Map citationMap = new HashMap();
-                    citationMap.put("@type", "CreativeWork");
-                    citationMap.put("name", rs.getString("name"));
-                    citationMap.put("url", rs.getString("url"));
-                    citations.add(citationMap);
-                }
-            }
-            finally {
-                if (rs != null)
-                    rs.close();
-
-                if (s != null)
-                    s.close();
-
-                if (c != null)
-                    c.close();
-            }
+        ClassDescriptor cd = getClassDescriptor();
+        String term = cd.getTerm();
+        if (term == null) {
+            term = cd.getSimpleName();
         }
-        catch (SQLException e) { throw new RuntimeException(e); }
 
-        bioschemasMap.put("citation", citations);
-        bioschemasMap.put("dateCreated", "2017-02-06");
-        bioschemasMap.put("dateModified", "2017-02-06");
-        bioschemasMap.put("datePublished", "2017-02-06");
-        Map funderMap = new HashMap();
-        funderMap.put("@type", "Organization");
-        funderMap.put("name", "Engineering and Physical Sciences Research Council");
-        funderMap.put("url", "https://www.epsrc.ac.uk/");
-        bioschemasMap.put("funder", funderMap);
-        bioschemasMap.put("inLanguage", "en");
-        bioschemasMap.put("isAccessibleForFree", true);
-        bioschemasMap.put("keywords", "data integration, synthetic biology, " + objectType);
-        Map sourceOrgMap = new HashMap();
-        sourceOrgMap.put("@type", "Organization");
-        sourceOrgMap.put("name", "Micklem Lab");
-        sourceOrgMap.put("url", "http://www.micklemlab.org/");
-        bioschemasMap.put("sourceOrganization", sourceOrgMap);
-        bioschemasMap.put("version", 6);
+        bioschemasMap.put("additionalType", term);
 
         return "<script type=\"application/ld+json\">\n" + new JSONObject(bioschemasMap).toString(2) + "\n</script>\n";
     }
