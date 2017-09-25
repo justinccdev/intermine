@@ -354,6 +354,7 @@ public class ReportObject
         Map bioschemasMap = new HashMap();
         bioschemasMap.put("@context", "http://bioschemas.org");
         bioschemasMap.put("@type", "PhysicalEntity");
+        bioschemasMap.put("identifier", attributes.get("primaryIdentifier"));
         bioschemasMap.put("name", getHtmlHeadTitle() + " " + attributes.get("primaryIdentifier"));
         //bioschemasMap.put("description", getHtmlHeadTitle());
         bioschemasMap.put("url", "http://beta.synbiomine.org/synbiomine/report.do?id=" + getId());
