@@ -45,6 +45,7 @@ import org.intermine.pathquery.Path;
 import org.intermine.pathquery.PathException;
 import org.intermine.util.DynamicUtil;
 import org.intermine.metadata.StringUtil;
+import org.intermine.web.context.InterMineContext;
 import org.intermine.web.displayer.DisplayerManager;
 import org.intermine.web.displayer.ReportDisplayer;
 import org.intermine.web.logic.Constants;
@@ -346,7 +347,7 @@ public class ReportObject
         return fieldValues.get(fieldExpression);
     }
 
-    public String getSemanticMarkup() throws JSONException {
+    public String getSemanticMarkup() throws JSONException, IllegalAccessException {
         List<String> lines = new ArrayList<String>();
 
         lines.add("<script type=\"application/ld+json\">");
@@ -355,9 +356,22 @@ public class ReportObject
         bioschemasMap.put("@context", "http://bioschemas.org");
         bioschemasMap.put("@type", "PhysicalEntity");
         bioschemasMap.put("identifier", attributes.get("primaryIdentifier"));
-        bioschemasMap.put("name", getHtmlHeadTitle() + " " + attributes.get("primaryIdentifier"));
-        //bioschemasMap.put("description", getHtmlHeadTitle());
-        bioschemasMap.put("url", "http://beta.synbiomine.org/synbiomine/report.do?id=" + getId());
+        String name = getHtmlHeadTitle() + " " + attributes.get("primaryIdentifier");
+        bioschemasMap.put("name", name);
+
+        /*
+        String description = name;
+        if (references.containsKey("organism")) {
+            InterMineObject imo = (InterMineObject) references.get("organism").getObject();
+            description += " for " + imo.getFieldValue("name");
+        }
+        bioschemasMap.put("description", description);
+        */
+
+        Properties webProperties = InterMineContext.getWebProperties();
+        String baseUrl = webProperties.getProperty("webapp.baseurl");
+        String webappPath = webProperties.getProperty("webapp.path");
+        bioschemasMap.put("url", baseUrl + "/" + webappPath + "/report.do?id=" + getId());
 
         ClassDescriptor cd = getClassDescriptor();
         String term = cd.getTerm();
@@ -639,7 +653,6 @@ public class ReportObject
      * @param listConfig retrieved from Type
      * @param bagOfInlineListNames is a bag of names of lists we have resolved so far so these
      *        fields are not resolved elsewhere and skipped instead
-     * @see setDescriptorOnInlineList() is still needed when traversing FieldDescriptors
      */
     private void initialiseInlineList(InlineListConfig listConfig,
             HashMap<String, Boolean> bagOfInlineListNames) {
